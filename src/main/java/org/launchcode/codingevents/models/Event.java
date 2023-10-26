@@ -1,5 +1,7 @@
 package org.launchcode.codingevents.models;
 
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import jakarta.persistence.Entity;
 import jakarta.validation.constraints.Email;
@@ -11,7 +13,7 @@ import java.util.Objects;
 @Entity
 public class Event {
     @Id //primary key
-    @GeneratedValue //wants database to generate value of primary key
+    @GeneratedValue//wants database to generate value of primary key
   private int id;
     private String name;
     private String description;
