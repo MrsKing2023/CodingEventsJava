@@ -1,20 +1,24 @@
 package org.launchcode.codingevents.models;
 
+import org.springframework.boot.autoconfigure.domain.EntityScan;
+//import jakarta.persistence.Entity;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
+
 import java.util.Objects;
 
+@Entity
 public class Event {
-
+    @Id //primary key
+    @GeneratedValue //wants database to generate value of primary key
   private int id;
-  private static int nextId = 1;
-
     private String name;
     private String description;
 
     public Event(String name, String description) {
         this.name = name;
         this.description = description;
-        this.id = nextId;
-        nextId++;
     }
 
     public String getDescription() {
