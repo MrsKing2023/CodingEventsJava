@@ -1,7 +1,9 @@
 package org.launchcode.codingevents.controllers;
 
 import org.launchcode.codingevents.data.EventData;
+import org.launchcode.codingevents.data.EventRepository;
 import org.launchcode.codingevents.models.Event;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.ui.Model;
@@ -15,14 +17,17 @@ import java.util.List;
 @Controller
 @RequestMapping("events")
 public class EventController {
+    @Autowired
+    private EventRepository eventRepository;
+
+    //findAll, save, findById-methods that are part of interface extended by CRUD
+
+    private static List<Event> events = new ArrayList<>();
+
     @GetMapping
     public String displayAllEvents(Model model) {
-        List<String> events = new ArrayList<>();
-        events.add("Code With Pride");
-        events.add("Strange Loop");
-        events.add("Apple WWDC");
-        events.add("SpringOne Platform");
-        model.addAttribute("events", EventData.getAll());
+        model.addAttribute("title", "All Events")
+        model.addAttribute("events", eventRepository.findAll());
         return "events/index";
     }
 
