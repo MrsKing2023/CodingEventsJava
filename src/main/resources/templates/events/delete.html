@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<<<<<<< HEAD
 <html lang="en" xmlns:th="https://www.thymeleaf.org/">
 <head th:replace="fragments :: head"></head>
 <body class="container">
@@ -12,6 +13,24 @@
             </label>
             </div>
         </th:block>
+=======
+<html lang="en" xmlns:th="http://www.thymeleaf.org/">
+<head th:replace="fragments :: head"></head>
+<body class="container">
+
+<header th:replace="fragments :: header"></header>
+
+<form method="post">
+
+    <th:block th:each="event : ${events}">
+        <div class="form-group">
+        <label>
+            <span th:text="${event.name}"></span>
+            <input type="checkbox" name="eventIds" th:value="${event.id}" class="form-control">
+        </label>
+        </div>
+    </th:block>
+>>>>>>> 0272eb9801ecf8dcc7310b45907cf1f9e54a99df
 
     <input type="submit" value="Delete" class="btn btn-danger">
 </form>
