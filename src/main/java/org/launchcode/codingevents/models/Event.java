@@ -1,59 +1,104 @@
-package org.launchcode.codingevents.models;
+package org.launchcode.codingevents.controllers;
 
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import org.springframework.boot.autoconfigure.domain.EntityScan;
-import jakarta.persistence.Entity;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.Valid;
+import org.launchcode.codingevents.data.EventCategoryRepository;
+import org.launchcode.codingevents.data.EventRepository;
+import org.launchcode.codingevents.models.Event;
+import org.launchcode.codingevents.models.EventCategory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.ui.Model;
+import org.springframework.validation.Errors;
 
-import java.util.Objects;
+import java.util.Optional;
 
-@Entity
-public class Event {
-    @Id //primary key
-    @GeneratedValue//wants database to generate value of primary key
-  private int id;
-    private String name;
-    private String description;
+/**
+ * Created by Chris Bay
+ */
+@Controller
+@RequestMapping("events")
+public class EventController {
 
-    public Event(String name, String description) {
-        this.name = name;
-        this.description = description;
+    @Autowired
+    private EventRepository eventRepository;
+
+    @Autowired
+    private EventCategoryRepository eventCategoryRepository;
+
+    @GetMapping
+    public String displayEvents(@RequestParam(required = false) Integer categoryId, Model model) {
+
+        if (categoryId == null) {
+            model.addAttribute("title", "All Events");
+            model.addAttribute("events", eventRepository.findAll());
+        } else {
+            Optional<EventCategory> result = eventCategoryRepository.findById(categoryId);
+            if (result.isEmpty()) {
+                model.addAttribute("title", "Invalid Category ID: " + categoryId);
+            } else {
+                EventCategory category = result.get();
+                model.addAttribute("title", "Events in category: " + category.getName());
+                model.addAttribute("events", category.getEvents());
+            }
+        }
+
+        return "events/index";
     }
 
-    public String getDescription() {
-        return description;
+    @GetMapping("create")
+    public String displayCreateEventForm(Model model) {
+        model.addAttribute("title", "Create Event");
+        model.addAttribute(new Event());
+        model.addAttribute("categories", eventCategoryRepository.findAll());
+        return "events/create";
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    @PostMapping("create")
+    public String processCreateEventForm(@ModelAttribute @Valid Event newEvent,
+                                         Errors errors, Model model) {
+        if(errors.hasErrors()) {
+            model.addAttribute("title", "Create Event");
+            return "events/create";
+        }
+
+        eventRepository.save(newEvent);
+        return "redirect:/events";
     }
 
-    public String getName() {
-        return name;
-    }
-    public void setName(String name) {
-        this.name = name;
-    }
-    public int getId() {
-        return id;
-    }
-    @Override
-    public String toString() {
-        return name;
+    @GetMapping("delete")
+    public String displayDeleteEventForm(Model model) {
+        model.addAttribute("title", "Delete Events");
+        model.addAttribute("events", eventRepository.findAll());
+        return "events/delete";
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Event event)) return false;
-        return id == event.id;
+    @PostMapping("delete")
+    public String processDeleteEventsForm(@RequestParam(required = false) int[] eventIds) {
+
+        if (eventIds != null) {
+            for (int id : eventIds) {
+                eventRepository.deleteById(id);
+            }
+        }
+
+        return "redirect:/events";
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(id);
+    @GetMapping("detail")
+    public String displayEventDetails(@RequestParam Integer eventId, Model model) {
+
+        Optional<Event> result = eventRepository.findById(eventId);
+
+        if (result.isEmpty()) {
+            model.addAttribute("title", "Invalid Event ID: " + eventId);
+        } else {
+            Event event = result.get();
+            model.addAttribute("title", event.getName() + " Details");
+            model.addAttribute("event", event);
+        }
+
+        return "events/detail";
     }
+
 }
