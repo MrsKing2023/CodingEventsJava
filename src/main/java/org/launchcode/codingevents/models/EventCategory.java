@@ -2,8 +2,6 @@ package org.launchcode.codingevents.models;
 
 import jakarta.persistence.Entity;
 import jakarta.validation.constraints.Size;
-import java.util.Objects;
-
 /**
  * Created by Chris Bay
  */
