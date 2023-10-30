@@ -3,10 +3,9 @@ package org.launchcode.codingevents.models;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.MappedSuperclass;
-
 import java.util.Objects;
 
-@MappedSuperclass
+@MappedSuperclass //we want to map these fields down into the extensions when putting the data into tables
 public abstract class AbstractEntity {
     @Id //primary key
     @GeneratedValue//wants database to generate value of primary key
