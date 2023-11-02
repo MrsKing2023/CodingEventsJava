@@ -64,7 +64,6 @@ public class EventController {
                 eventRepository.deleteById(id);
             }
         }
-
         return "redirect:";
     }
 
