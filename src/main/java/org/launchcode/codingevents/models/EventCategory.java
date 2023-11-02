@@ -30,4 +30,5 @@ public class EventCategory extends AbstractEntity {
         return name;
     }
 
+
 }
